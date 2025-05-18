@@ -93,5 +93,24 @@
     document.getElementById("requests").addEventListener("input", calculatePrice);
     document.getElementById("subscribers").addEventListener("input", calculatePrice);
 </script>
-
+<script>
+    setTimeout(() => {
+        const msg = document.getElementById('message');
+        if (msg) {
+        msg.style.opacity = '0'
+        setTimeout(() => {
+            msg.remove();
+        }, 1000);
+        }
+    }, 3000);
+    setTimeout(() => {
+        const flash_msg = document.getElementById('flahsed-message');
+        if (flash_msg) {
+            flash_msg.style.opacity = '0';
+            setTimeout(() => {
+                flash_msg.remove();
+            }, 1000);
+        }
+    }, 5000);
+</script>
 {%endblock%}
