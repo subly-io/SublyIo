@@ -4,6 +4,8 @@ from ManageSubscriptions import db
 from ManageSubscriptions.models import Client,ClientPlan,ClientSubscriber,APIUsageTrack
 from datetime import datetime,timedelta
 from .helpers import is_valid_date
+import hmac
+import hashlib
 api_bp = Blueprint('api',__name__)
 
 @api_bp.route('/api/subscribers', methods=["GET"])
@@ -501,3 +503,51 @@ def api_plan(name):
                 db.session.rolback()
                 return jsonify({"message":"Failed to delete plan.","status":400}), 400
         return jsonify({"message":"You have no plan associated with this name.","status":400}), 400
+
+@api_bp.route('/gumroad-webhook', methods=["POST"])
+def api_subscribers():
+    if request.method == "POST":
+        secret_str = os.environ.get('GUMROAD_KEY')
+        secret = secret_str.encode('utf-8')
+        signature = request.headers.get('Gumroad-Signature')
+        body = request.get_data()
+        expected_signature = hmac.new(secret, body, hashlib.sha256).hexdigest()
+        if not hmac.compare_digest(signature, expected_signature):
+            return "Invalid signature", 403
+            
+        data = request.form.to_dict()
+        email = data.get('email')
+        product_name = data.get('product_name')
+        product_permalink = data.get('product_permalink')
+        if not email or not product_name:
+            return "Missing fields", 400
+        client = User.query.filter_by(email=email).first()
+        if client:
+            if ("Pro" in product_name) or (product_permalink == 'subly-pro-plan'):
+                client.subscription_type = 'pro'
+                client.remaining_days = 30
+                client.allowed_requests = 20000
+                client.subscribers_limit = 500
+                client.plans_limit = 8
+                client.notified_for_limit = False
+                client.notified_for_expiration = False
+                client.requests = 0
+                db.session.commit()
+                return "OK", 200
+            elif ("Ultimate" in product_name) or (product_permalink == 'subly-ultimate-plan'):
+                client.subscription_type = 'ultimate'
+                client.remaining_days = 30
+                client.allowed_requests = 200000
+                client.subscribers_limit = 5000
+                client.plans_limit = 15
+                client.notified_for_limit = False
+                client.notified_for_expiration = False
+                client.requests = 0
+                db.session.commit()
+                return "OK", 200
+            else:
+                return "Invalid Plan name", 400
+        else:
+            return "User doesn't exist", 400
+    else:
+        return "Invalid method", 400
