@@ -42,17 +42,8 @@ def custom_plan():
         except:
             flash('Values should be a numbers', 'error')
             return redirect(url_for('forms.custom_plan'))
-        try:
-            current_user.allowed_requests = int(requests)
-            current_user.subscribers_limit = int(subscribers)
-            current_user.subscription_type = 'custom'
-            current_user.remaining_days = 30
-            current_user.plans_limit = 15
-            db.session.commit()
-            flash('Your custom plan has been activated', 'success')
-            return redirect(url_for('dashboards.dashboard'))
-        except:
-            db.session.rollback()
-            flash('Failed to activate your custom plan', 'error')
-            return redirect(url_for('forms.custom_plan'))
+        message = f'requests required : {requests}, subscribers required : {subscribers}'
+        new_message = SupportMessages(email=current_user.email,full_name=current_user.name,message=message,status=0)
+        flash('Your request reached us and we will reply within some hours.', 'success')
+        return redirect(url_for('dashboards.dashboard'))
     return render_template('custom_plan.html', title='Subly - Custom Plan', form=form)
