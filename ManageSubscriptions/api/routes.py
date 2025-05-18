@@ -522,6 +522,7 @@ def gumroad_webhook():
         email = data.get('email')
         product_name = data.get('product_name')
         product_permalink = data.get('product_permalink')
+        print(data)
         if not email or not product_name:
             return "Missing fields", 400
         client = Client.query.filter_by(email=email).first()
