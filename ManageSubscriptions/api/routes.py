@@ -505,7 +505,7 @@ def api_plan(name):
         return jsonify({"message":"You have no plan associated with this name.","status":400}), 400
 
 @api_bp.route('/gumroad-webhook', methods=["POST"])
-def api_subscribers():
+def gumroad_webhook():
     if request.method == "POST":
         secret_str = os.environ.get('GUMROAD_KEY')
         secret = secret_str.encode('utf-8')
