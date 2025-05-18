@@ -524,7 +524,7 @@ def gumroad_webhook():
         product_permalink = data.get('product_permalink')
         if not email or not product_name:
             return "Missing fields", 400
-        client = User.query.filter_by(email=email).first()
+        client = Client.query.filter_by(email=email).first()
         if client:
             if ("Pro" in product_name) or (product_permalink == 'subly-pro-plan'):
                 client.subscription_type = 'pro'
