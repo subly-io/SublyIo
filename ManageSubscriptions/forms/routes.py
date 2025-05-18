@@ -44,6 +44,7 @@ def custom_plan():
             return redirect(url_for('forms.custom_plan'))
         message = f'requests required : {requests}, subscribers required : {subscribers}'
         new_message = SupportMessages(email=current_user.email,full_name=current_user.name,message=message,status=0)
+        db.session.commit()
         flash('Your request reached us and we will reply within some hours.', 'success')
         return redirect(url_for('dashboards.dashboard'))
     return render_template('custom_plan.html', title='Subly - Custom Plan', form=form)
