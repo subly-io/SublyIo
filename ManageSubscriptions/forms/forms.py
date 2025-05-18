@@ -11,4 +11,4 @@ class SupportForm(FlaskForm):
 class CustomPlan(FlaskForm):
     requests = StringField('Requests Per Month', validators=[DataRequired()])
     subscribers = StringField('Subscribers Limit', validators=[DataRequired()])
-    submit = SubmitField('Subscribe')
+    submit = SubmitField('Send Request')
