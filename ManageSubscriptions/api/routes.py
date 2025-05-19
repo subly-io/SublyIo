@@ -512,11 +512,11 @@ def gumroad_webhook():
         signature = request.headers.get('Gumroad-Signature')
         body = request.get_data()
         expected_signature = hmac.new(secret, body, hashlib.sha256).hexdigest()
-        if signature:
-            if not hmac.compare_digest(signature, expected_signature):
-                return "Invalid signature", 403
-        else:
-            return "Missing signature", 403
+        #if signature:
+            #if not hmac.compare_digest(signature, expected_signature):
+                #return "Invalid signature", 403
+       # else:
+           # return "Missing signature", 403
             
         data = request.form.to_dict()
         email = data.get('email')
