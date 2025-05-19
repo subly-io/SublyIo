@@ -521,13 +521,13 @@ def gumroad_webhook():
         data = request.form.to_dict()
         email = data.get('email')
         product_name = data.get('product_name')
-        product_permalink = data.get('product_permalink')
+        product_permalink = data.get('permalink')
         print(data)
         if not email or not product_name:
             return "Missing fields", 400
         client = Client.query.filter_by(email=email).first()
         if client:
-            if ("Pro" in product_name) or (product_permalink == 'subly-pro-plan'):
+            if (product_name == 'Subly - Pro Plan') or (product_permalink == 'subly-pro-plan'):
                 client.subscription_type = 'pro'
                 client.remaining_days = 30
                 client.allowed_requests = 20000
@@ -538,7 +538,7 @@ def gumroad_webhook():
                 client.requests = 0
                 db.session.commit()
                 return "OK", 200
-            elif ("Ultimate" in product_name) or (product_permalink == 'subly-ultimate-plan'):
+            elif (product_name == 'Subly - Ultimate Plan') or (product_permalink == 'subly-ultimate-plan'):
                 client.subscription_type = 'ultimate'
                 client.remaining_days = 30
                 client.allowed_requests = 200000
