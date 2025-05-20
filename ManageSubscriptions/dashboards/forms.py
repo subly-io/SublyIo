@@ -23,7 +23,7 @@ class AddSubscriberForm(FlaskForm):
     def __init__(self, *args, **kwargs):
         super(AddSubscriberForm, self).__init__(*args, **kwargs)
         if current_user.is_authenticated:
-            self.plan_id.choices = [(plan.name, plan.name + ' | ' + str(plan.duration_days) + ' days') for plan in current_user.plans]
+            self.plan_id.choices = [plan.name for plan in current_user.plans]
         else:
             self.plan_id.choices = []
 
