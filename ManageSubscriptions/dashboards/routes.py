@@ -177,10 +177,9 @@ def add_subscriber():
         active = form.active.data
         plan_duration_days = 0
         meta_data = form.meta_data.data
-        try:
-            plan_id = plan_id.split()[0]
-        except:
-            abort(403)
+        if plan_id == "":
+            flash('Plan name can\'t be null.', 'error')
+            return redirect(url_for('dashboards.add_subscriber'))
         is_sub_exists = ClientSubscriber.query.filter_by(client_id=current_user.id,user_id=user_id).first()
         if is_sub_exists:
             flash('User with this id already exists.', 'error')
